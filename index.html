@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Countdown Timer with Repetitions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+    }
+    input, button {
+      font-size: 20px;
+      margin: 10px;
+      padding: 10px;
+    }
+    #timer {
+      font-size: 24px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <input id="secondsInput" type="number" placeholder="Enter seconds:" />
+  <input id="repsInput" type="number" placeholder="Enter repetitions:" />
+  <button id="startButton">Start</button>
+  <div id="timer"></div>
+
+  <script>
+    let seconds;
+    let initialSeconds;
+    let repetitions;
+    let timerInterval;
+
+    document.getElementById('startButton').addEventListener('click', startCountdown);
+
+    function startCountdown() {
+      const secondsInput = document.getElementById('secondsInput');
+      const repsInput = document.getElementById('repsInput');
+
+      // Convert input values to integers
+      seconds = parseInt(secondsInput.value);
+      repetitions = parseInt(repsInput.value);
+
+      if (isNaN(seconds) || seconds <= 0) {
+        document.getElementById('timer').textContent = "Enter a valid number of seconds!";
+        return;
+      }
+      if (isNaN(repetitions) || repetitions <= 0) {
+        document.getElementById('timer').textContent = "Enter a valid number of repetitions!";
+        return;
+      }
+
+      // Save the initial seconds value to reset on each repetition
+      initialSeconds = seconds;
+
+      document.getElementById('timer').textContent = `${seconds} seconds left (Reps: ${repetitions})`;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      const timerDisplay = document.getElementById('timer');
+      if (seconds > 0) {
+        seconds--;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerDisplay.textContent = `${mins < 10 ? "0" + mins : mins}:${secs < 10 ? "0" + secs : secs} left (Reps: ${repetitions})`;
+      } else {
+        // One countdown cycle finished
+        if (repetitions > 1) {
+          repetitions--;                  // Decrement repetition count
+          seconds = initialSeconds;       // Reset seconds for the next cycle
+          timerDisplay.textContent = `${seconds} seconds left (Reps: ${repetitions})`;
+        } else {
+          timerDisplay.textContent = "Time's up!";
+          clearInterval(timerInterval);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
